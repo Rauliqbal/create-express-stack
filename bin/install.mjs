@@ -64,7 +64,7 @@ try {
   npmSpinner.succeed();
 
   console.log("   ");
-  console.log("Yeay, projekmu Express Stackmu sudah siap🥳");
+  console.log("Yeay, projek Express Stackmu sudah siap🥳");
   console.log("Kamu bisa menjalankan projekmu dengan:");
   console.log(`    cd ${projectName}`);
   console.log(`    npm run dev`);
