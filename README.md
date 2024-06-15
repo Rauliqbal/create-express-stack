@@ -1,4 +1,4 @@
-# EXPRESS BOILERPLATE
+# EXPRESS STACK
 
 **Simply create a new Express application with one command!**
 
@@ -8,6 +8,7 @@ npx create-express-stack my-server
 
 ## Includes
 
-- Express
-- Nodemon
-- Prisma
+- Express JS
+- Mongo DB
+- Mongoose ODM
+- CORS
