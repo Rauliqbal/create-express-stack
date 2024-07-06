@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-import { Database } from "./src/Database/index.js";
+import { Database } from "./config/database.js";
+import router from './src/router/index.js'
 import chalk from "chalk";
 import "dotenv/config";
 
@@ -18,17 +19,19 @@ app.use(bodyParser.json());
 Database(process.env.DATABASE_URL);
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome! to my server👋🏻",
-  });
+   res.json({
+      message: "Welcome! to my server👋",
+   });
 });
+
+app.use('/api', router)
 
 // PORT
 const port = 3000;
 app.listen(port, () =>
-  console.log(
-    `${chalk.bgGreen(" INFO ")} Server running on ${chalk.blue.bold(
-      `http://localhost:${port}`
-    )}`
-  )
+   console.log(
+      `${chalk.bgGreen(" INFO ")} Server running on ${chalk.blue.bold(
+         `http://localhost:${port}`
+      )}`
+   )
 );
