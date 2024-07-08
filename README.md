@@ -1,6 +1,6 @@
 # EXPRESS STACK - Node Server Boilerplate
 
-[![npm version](https://badge.fury.io/js/create-express-stack.svg)](https://badge.fury.io/js/create-express-stack)
+[![GitHub version](https://badge.fury.io/gh/Rauliqbal%2Fcreate-express-stack.git.svg)](https://badge.fury.io/gh/Rauliqbal%2Fcreate-express-stack.git)
 
 Boilerplate/starter project to easily create RESTful APIs using Node.js, Express, and Mongoose.
 Simply create a new Express application with one command
