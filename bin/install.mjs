@@ -11,9 +11,9 @@ const exec = promisify(cp.exec);
 const rm = promisify(fs.rm);
 
 if (process.argv.length < 3) {
-   console.log(chalk.blueBright("Kamu harus menamai projek anda!"));
+   console.log("Kamu harus menamai projek anda!");
    console.log("Contohnya :");
-   console.log("   npx create-express-stack my-server");
+   console.log(chalk.green.bold("   npx create-express-stack my-server"));
    process.exit(1);
 }
 
@@ -42,6 +42,11 @@ try {
    gitSpinner.succeed();
 
    const cleanSpinner = ora("Tunggu sebentar yaa😁...").start();
+
+   // Copy environment variables
+   fs.copyFileSync(path.join(projectPath, '.env.example'), path.join(projectPath, '.env'));
+
+
    // remove my git history
    const rmGit = rm(path.join(projectPath, ".git"), {
       recursive: true,
@@ -57,10 +62,15 @@ try {
       recursive: true,
       force: true,
    });
+   // remove license file
+   const rmEnv = rm(path.join(projectPath, ".env.example"), {
+      recursive: true,
+      force: true,
+   });
 
 
 
-   await Promise.all([rmGit, rmBin, rmLicense]);
+   await Promise.all([rmGit, rmBin, rmLicense, rmEnv]);
 
    process.chdir(projectPath);
    // remove the packages needed for cli
@@ -71,7 +81,7 @@ try {
    await exec("npm install");
    npmSpinner.succeed();
 
-   console.log(`
+   console.info(chalk.yellow(`
     ████████████████████████
     ████████████████████████
     ████████████████████████
@@ -83,14 +93,14 @@ try {
     ██████████  ████████  ██
     ██████████  ██  ████  ██
     ██████    ██████    ████
-    ████████████████████████`);
+    ████████████████████████`));
    console.log("   ");
    console.log("Yeay, projek Express Stackmu sudah siap🥳");
    console.log("Kamu bisa menjalankan projekmu dengan:");
-   console.log(`    cd ${projectName}`);
-   console.log(`    npm run dev`);
+   console.log(chalk.green.bold(`    cd ${projectName}`));
+   console.log(chalk.green.bold(`    npm run dev`));
    console.log("   ");
-   console.log("Happy Coding!👾");
+   console.log(chalk.bgBlue.bold(" Happy Coding!👾 "));
 } catch (error) {
    // clean up in case of error, so the user does not have to do it manually
    fs.rmSync(projectPath, { recursive: true, force: true });
