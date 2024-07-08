@@ -1,14 +1,56 @@
 # EXPRESS STACK - Node Server Boilerplate
 
-**Simply create a new Express application with one command!**
+[![npm version](https://badge.fury.io/js/create-express-stack.svg)](https://badge.fury.io/js/create-express-stack)
+
+Boilerplate/starter project to easily create RESTful APIs using Node.js, Express, and Mongoose.
+Simply create a new Express application with one command
+
+## Quick Started
+
+### Create project
 
 ```bash
-npx create-express-stack my-server
+npx create-express-stack <project-name>
+cd <project-name>
 ```
 
-## Includes
+### Set the environment variable
 
-- Express JS
-- Mongo DB
-- Mongoose ODM
-- CORS
+```bash
+cp .env.example .env
+```
+
+### Running Server
+
+```bash
+npm run dev
+```
+
+and now you can development application
+
+## Features
+
+- **Web Framework** : using [Express JS](https://expressjs.com/)
+- **Database No SQL** : [Mongo DB](https://www.mongodb.com/) with object data modeling [Mongoose](https://mongoosejs.com/)
+- **Logging** : using [Morgan](https://www.npmjs.com/package/morgan)
+- **CORS** : Cross-origin resource sharing using [CORS](https://www.npmjs.com/package/cors)
+- **Environment variables** : using [Dotenv](https://www.npmjs.com/package/dotenv)
+- Authentication and Authorization with **jsonwebtoken**[JWT](https://www.npmjs.com/package/jsonwebtoken)
+
+# Project Structure
+
+```
+config\         # Configuration & Database function
+src\
+ |--controllers\    # Route controllers (controller layer)
+ |--middlewares\    # Custom express middlewares
+ |--models\         # Mongoose models
+ |--router\         # Routes
+ |--docs\           # Swagger files
+.env            # Environment variables
+index.js        # App entry point
+```
+
+## API Documentation
+
+To view the list of available APIs and their specifications, run the server and go to `http://localhost:3000/docs` in your browser. This documentation page is automatically generated using the [swagger](https://swagger.io/) definitions written as comments in the route files.

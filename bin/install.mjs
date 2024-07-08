@@ -52,7 +52,15 @@ try {
       recursive: true,
       force: true,
    });
-   await Promise.all([rmGit, rmBin]);
+   // remove license file
+   const rmLicense = rm(path.join(projectPath, "LICENSE"), {
+      recursive: true,
+      force: true,
+   });
+
+
+
+   await Promise.all([rmGit, rmBin, rmLicense]);
 
    process.chdir(projectPath);
    // remove the packages needed for cli
