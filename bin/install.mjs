@@ -41,7 +41,7 @@ try {
   await exec(`git clone --depth 1 ${git_repo} ${projectPath} --quiet`);
   gitSpinner.succeed();
 
-  const cleanSpinner = ora("Tunggu sebentar yaa pren😁...").start();
+  const cleanSpinner = ora("Tunggu sebentar yaa😁...").start();
   // remove my git history
   const rmGit = rm(path.join(projectPath, ".git"), {
     recursive: true,
@@ -71,11 +71,6 @@ try {
   console.log("   ");
   console.log("Happy Coding!👾");
   console.log("   ");
-  console.log("   ");
-  console.log(
-    "Kalo suka dengan Express Stack jangan lupa kasih bintang di github yaa⭐"
-  );
-  console.log("terima kasih 🙂");
 } catch (error) {
   // clean up in case of error, so the user does not have to do it manually
   fs.rmSync(projectPath, { recursive: true, force: true });

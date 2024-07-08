@@ -1,4 +1,4 @@
-# EXPRESS STACK
+# EXPRESS STACK - Node Server Boilerplate
 
 **Simply create a new Express application with one command!**
 
