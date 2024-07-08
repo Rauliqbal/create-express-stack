@@ -51,3 +51,15 @@ export const login = async (req, res) => {
       res.status(400).json({ status: "Failed", message: `Error : ${error.message}` })
    }
 };
+
+export const getUser = async (req, res) => {
+   const user = await User.findOne({
+      _id: req.user.id
+   })
+
+   if (!user) return res.status(401).json({ message: "Unauthorized" })
+
+   const { passwod, ...user_data } = user._doc
+
+   return res.status(200).json({ status: "Success", message: `Hello ${user.username}`, data: user_data })
+}
