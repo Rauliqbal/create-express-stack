@@ -14,12 +14,6 @@ npx create-express-stack <project-name>
 cd <project-name>
 ```
 
-### Set the environment variable
-
-```bash
-cp .env.example .env
-```
-
 ### Running Server
 
 ```bash
@@ -35,14 +29,14 @@ and now you can development application
 - **Logging** : using [Morgan](https://www.npmjs.com/package/morgan)
 - **CORS** : Cross-origin resource sharing using [CORS](https://www.npmjs.com/package/cors)
 - **Environment variables** : using [Dotenv](https://www.npmjs.com/package/dotenv)
-- Authentication and Authorization with **jsonwebtoken**[JWT](https://www.npmjs.com/package/jsonwebtoken)
+- Authentication and Authorization with **jsonwebtoken** [JWT](https://www.npmjs.com/package/jsonwebtoken)
 
 # Project Structure
 
 ```
 config\         # Configuration & Database function
 src\
- |--controllers\    # Route controllers (controller layer)
+ |--controllers\    # Controllers function
  |--middlewares\    # Custom express middlewares
  |--models\         # Mongoose models
  |--router\         # Routes
