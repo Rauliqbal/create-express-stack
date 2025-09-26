@@ -12,13 +12,6 @@ import { downloadTemplate } from "giget";
 const exec = promisify(cp.exec);
 const rm = promisify(fs.rm);
 
-// if (process.argv.length < 3) {
-//    console.log("Kamu harus menamai projek anda!");
-//    console.log("Contohnya :");
-//    console.log(chalk.green.bold("   npx create-express-stack my-server"));
-//    process.exit(1);
-// }
-
 const templates = ["prisma", "mongoose"];
 const dirName = templates;
 const config = {
@@ -31,7 +24,7 @@ const question = [
   {
     name: "project-name",
     type: "input",
-    message: "What is your name?",
+    message: "What is the name of your new project?",
     default: "my-server",
   },
   {
