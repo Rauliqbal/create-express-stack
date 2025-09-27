@@ -24,14 +24,14 @@ process.on("SIGINT", () => {
 
 // ASCII ART
 const asciiArt = `                                             
- _____                     _____ _           _   
-|   __|_ _ ___ ___ ___ ___|   __| |_ ___ ___| |_ 
-|   __|_'_| . |  _| -_|_ -|__   |  _| .'|  _| '_|
-|_____|_,_|  _|_| |___|___|_____|_| |__,|___|_,_|
-          |_|                                                                                
+____ _  _ ____ ____ ____ ___  ___  ____ ___  ____ __ _ 
+| __\|\/_\| . \| . \| __\| _\ | _\ |_ _\|  \ | __\| V \
+|  ]__><__| __/|  <_|  ]_[__ \[__ \  || | . \| \__|  <_
+|___/|/\_/|/   |/\_/|___/|___/|___/  |/ |/\_/|___/|/\_/
+         
 `;
 
-const templates = ["prisma", "mongoose"];
+const templates = ["ExpressJS"];
 const dirName = templates;
 const config = {
   directory: dirName,
@@ -70,13 +70,6 @@ const question = [
   },
 ];
 
-//  const projectName = process.argv[2];
-// const projectPath = path.join(currentPath, projectName);
-
-// change to your boilerplate repo
-const git_repo = "https://github.com/Rauliqbal/create-express-stack.git";
-const mongoose = "https://github.com/AzuraCoder/mongoose-template.git";
-
 console.log(chalk.blue(asciiArt));
 
 const main = async () => {
@@ -102,7 +95,7 @@ const main = async () => {
     // Clone Project
     const gitLoading = ora("📡 Downloading... Please wait.").start();
     await exec(
-      `git clone --depth 1 https://github.com/Rauliqbal/${projectTemplate}-boilerplate.git ${projectPath} --quiet`
+      `git clone --depth 1 https://github.com/Rauliqbal/${projectTemplate}-template.git ${projectPath} --quiet`
     );
     gitLoading.succeed();
 
