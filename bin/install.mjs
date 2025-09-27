@@ -1,16 +1,35 @@
 #!/usr/bin/env node
 import { promisify } from "util";
 import cp from "child_process";
-import path from "path";
-import fs, { existsSync, mkdirSync } from "fs";
+import { join } from "path";
+import fs, { existsSync, mkdirSync, rmSync } from "fs";
 import ora from "ora";
 import chalk from "chalk";
 import inquirer from "inquirer";
-import { downloadTemplate } from "giget";
 
 // convert libs to promises
 const exec = promisify(cp.exec);
 const rm = promisify(fs.rm);
+
+let projectPath = "";
+
+process.on("SIGINT", () => {
+  if (projectPath && existsSync(projectPath)) {
+    rmSync(projectPath, { recursive: true, force: true });
+    console.log(chalk.red("\n 🧹 Folder project sementara dihapus."));
+  }
+  console.log(chalk.yelllowBright("❌ Proses dibatalkan oleh pengguna"));
+  process.exit(0);
+});
+
+// ASCII ART
+const asciiArt = `                                             
+ _____                     _____ _           _   
+|   __|_ _ ___ ___ ___ ___|   __| |_ ___ ___| |_ 
+|   __|_'_| . |  _| -_|_ -|__   |  _| .'|  _| '_|
+|_____|_,_|  _|_| |___|___|_____|_| |__,|___|_,_|
+          |_|                                                                                
+`;
 
 const templates = ["prisma", "mongoose"];
 const dirName = templates;
@@ -20,18 +39,34 @@ const config = {
   user: "AzuraCoder",
   ref: "main",
 };
+
 const question = [
   {
-    name: "project-name",
     type: "input",
+    name: "project-name",
     message: "What is the name of your new project?",
     default: "my-server",
+    validate: (value) => {
+      if (value.includes(" ")) {
+        return "Project name cannot contain spaces.";
+      }
+      if (!/^[a-zA-Z0-9-_]+$/.test(value)) {
+        return "Only letters, numbers, dashes (-), and underscores (_) are allowed.";
+      }
+      return true;
+    },
   },
   {
-    name: "project-template",
     type: "list",
+    name: "project-template",
     message: "Which template do you want to use?",
     choices: templates,
+  },
+  {
+    type: "list",
+    name: "package-manager",
+    message: "Choose your package manager:",
+    choices: ["npm", "pnpm", "bun"],
   },
 ];
 
@@ -40,79 +75,85 @@ const question = [
 
 // change to your boilerplate repo
 const git_repo = "https://github.com/Rauliqbal/create-express-stack.git";
-const mongoose = "https://github.com/AzuraCoder/mongoose-template.git"
+const mongoose = "https://github.com/AzuraCoder/mongoose-template.git";
 
-inquirer.prompt(question).then(async (answers) => {
-  const projectName = answers["project-name"];
-  const projectTemplate = answers["project-template"];
-  const currentPath = process.cwd();
-  const projectPath = path.join(currentPath, projectName);
+console.log(chalk.blue(asciiArt));
 
-  
-
-  if (fs.existsSync(projectPath)) {
-    console.log(
-      `Projek ${chalk.green(
-        projectName
-      )} sudah ada di direktori saat ini, harap beri nama lain🙏🏻.`
-    );
-
-    process.exit(1);
-  } else {
-    fs.mkdirSync(projectPath);
-  }
-
+const main = async () => {
   try {
-    const gitSpinner = ora("Downloading files🚀...").start();
-    await exec(`git clone --depth 1 https://github.com/AzuraCoder/${projectTemplate}-template.git  ${projectPath} --quiet`);
-    gitSpinner.succeed();
+    const answers = await inquirer.prompt(question);
+    const projectName = answers["project-name"];
+    const projectTemplate = answers["project-template"];
+    const projectPackageManager = answers["package-manager"];
+    const currentPath = process.cwd();
 
-    const cleanSpinner = ora("Tunggu sebentar yaa😁...").start();
+    projectPath = join(currentPath, projectName);
 
-    // Copy environment variables
-    // fs.copyFileSync(path.join(projectPath, '.env.example'), path.join(projectPath, '.env'));
+    // Validasi kalo ada nama folder sama
+    if (existsSync(projectPath)) {
+      console.log(
+        chalk.redBright("🚫 Nama project sudah digunakan. Pake nama lain aja")
+      );
+      process.exit(1);
+    } else {
+      mkdirSync(projectPath);
+    }
 
-    // remove my git history
-    const rmGit = rm(path.join(projectPath, ".git"), {
+    // Clone Project
+    const gitLoading = ora("📡 Downloading... Please wait.").start();
+    await exec(
+      `git clone --depth 1 https://github.com/Rauliqbal/${projectTemplate}-boilerplate.git ${projectPath} --quiet`
+    );
+    gitLoading.succeed();
+
+    // Setup project
+    const setupLoading = ora("🛠️  Setting up your project...").start();
+    const rmGit = rm(join(projectPath, ".git"), {
       recursive: true,
       force: true,
     });
-    // // remove the installation file
-    // const rmBin = rm(path.join(projectPath, "bin"), {
-    //    recursive: true,
-    //    force: true,
-    // });
-    // // remove license file
-    // const rmLicense = rm(path.join(projectPath, "LICENSE"), {
-    //    recursive: true,
-    //    force: true,
-    // });
-    // // remove env file
-    // const rmEnv = rm(path.join(projectPath, ".env.example"), {
-    //    recursive: true,
-    //    force: true,
-    // });
+    const rmLock = rm(join(projectPath, "package-lock.json"), {
+      recursive: true,
+      force: true,
+    });
 
-    await Promise.all([rmGit]);
-
+    await Promise.all([rmGit, rmLock]);
     process.chdir(projectPath);
-    // remove the packages needed for cli
-    await exec("npm uninstall ora cli-spinners");
-    cleanSpinner.succeed();
+    setupLoading.succeed();
 
-    const npmSpinner = ora("Installing dependencies...").start();
-    await exec("npm install");
-    npmSpinner.succeed();
+    // Install Dependencies
+    const installLoading = ora("📦 Installing dependencies...").start();
+    await exec(`${projectPackageManager} install`);
+    installLoading.succeed();
 
-    console.log("🎉Yeay, projek Express Stackmu sudah siap🥳");
-    console.log(chalk.gray("Get started with:"));
-    console.log(chalk.green.bold(`    cd ${projectName}`));
-    console.log(chalk.green.bold(`    npm run dev`));
-    console.log("   ");
-    console.log(chalk.blue.bold(" Happy Coding!👾 "));
+    console.log(chalk.greenBright("\n🎉 Beres! Project siap dijalankan."));
+    console.log(chalk.gray("\nGet started:"));
+    console.log(chalk.cyan(`  cd ${projectName}`));
+    console.log(chalk.cyan(`  ${projectPackageManager} run dev\n`));
+    console.log(chalk.magentaBright("✨ Happy hacking! ✨"));
   } catch (error) {
-    // clean up in case of error, so the user does not have to do it manually
-    fs.rmSync(projectPath, { recursive: true, force: true });
-    console.log(error);
+    if (
+      error.isTtyError ||
+      error.message?.includes("force closed the prompt")
+    ) {
+      console.log(
+        chalk.yellowBright(
+          "\n⚠️ Batal membuat project. Tidak ada perubahan yang terjadi"
+        )
+      );
+    } else {
+      console.error(
+        chalk.red("\n ❌ Eh, ada error nih saat menjalankan CLI:"),
+        error
+      );
+    }
+
+    if (projectPath && existsSync(projectPath)) {
+      rmSync(projectPath, { recursive: true, force: true });
+    }
+
+    process.exit(0);
   }
-});
+};
+
+main();
